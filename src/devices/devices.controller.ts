@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
   Param,
   Body,
@@ -12,6 +13,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
+import { UpdateDeviceStatusDto } from './dto/update-device-status.dto';
+import { UpdateDeviceGradeDto } from './dto/update-device-grade.dto';
 import { UserRole } from '../users/entities/user-role.enum';
 
 @Controller('devices')
@@ -38,6 +41,33 @@ export class DevicesController {
   // kol user connecté ynajem ychouf liste mta3 devices
   findAll() {
     return this.devicesService.findAll();
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  // tjib device wahda b id (BONUS)
+  getOne(@Param('id') id: string) {
+    return this.devicesService.findOne(+id);
+  }
+
+  @Patch(':id/status')
+  @UseGuards(AuthGuard('jwt'))
+  // nbadlou status mta3 device (BONUS)
+  updateStatus(
+    @Param('id') id: string,
+    @Body() dto: UpdateDeviceStatusDto,
+  ) {
+    return this.devicesService.updateStatus(+id, dto.status);
+  }
+
+  @Patch(':id/grade')
+  @UseGuards(AuthGuard('jwt'))
+  // nbadlou grade mta3 device ba3d repair (BONUS)
+  updateGrade(
+    @Param('id') id: string,
+    @Body() dto: UpdateDeviceGradeDto,
+  ) {
+    return this.devicesService.updateGrade(+id, dto.grade);
   }
 
   @Delete(':id')

@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Device } from './entities/device.entity';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UserRole } from '../users/entities/user-role.enum';
+import { DeviceStatus } from './entities/device-status.enum';
+import { DeviceGrade } from './entities/device-grade.enum';
 
 @Injectable()
 // service responsable 3la gestion devices
@@ -25,6 +31,20 @@ export class DevicesService {
     return this.devicesRepository.find();
   }
 
+  // tjib device wahda b id (BONUS)
+  async findOne(id: number): Promise<Device> {
+    const device = await this.devicesRepository.findOne({
+      where: { id },
+    });
+
+    // ken device mech mawjoud
+    if (!device) {
+      throw new NotFoundException('Device not found');
+    }
+
+    return device;
+  }
+
   // nfassa5 device (ADMIN bark)
   async remove(id: number, userRole: UserRole): Promise<void> {
     // ken mech ADMIN → accès refusé
@@ -39,4 +59,25 @@ export class DevicesService {
       throw new NotFoundException('Device not found');
     }
   }
+
+  // nbadlou status mta3 device (BONUS)
+  async updateStatus(
+    id: number,
+    status: DeviceStatus,
+  ): Promise<Device> {
+    const device = await this.findOne(id);
+    device.status = status;
+    return this.devicesRepository.save(device);
+  }
+
+  // nbadlou grade mta3 device ba3d repair (BONUS)
+  async updateGrade(
+    id: number,
+    grade: DeviceGrade,
+  ): Promise<Device> {
+    const device = await this.findOne(id);
+    device.grade = grade;
+    return this.devicesRepository.save(device);
+  }
 }
+
