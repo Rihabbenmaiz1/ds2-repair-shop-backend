@@ -13,7 +13,7 @@ export class Device {
   // serial number unique mta3 device
   serialNumber: string;
 
-  @Column()
+  @Column({ length: 50 })
   // marque mta3 device (Apple, Samsung...)
   brand: string;
 
