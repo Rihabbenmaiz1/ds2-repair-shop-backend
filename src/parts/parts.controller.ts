@@ -15,6 +15,7 @@ import { PartsService } from './parts.service';
 import { UserRole } from '../users/entities/user-role.enum';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { UpdateStockDto } from './dto/update-stock.dto';
 
 @Controller('parts')
 // controller mta3 gestion stock spare parts
@@ -35,6 +36,13 @@ export class PartsController {
     return this.partsService.findAll();
   }
 
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  // tjib spare part wahda b id (BONUS)
+  getOne(@Param('id') id: string) {
+    return this.partsService.findOne(+id);
+  }
+
   @Post()
   @UseGuards(AuthGuard('jwt'))
   // ADMIN bark ynajem ycreate piece jdida
@@ -45,7 +53,7 @@ export class PartsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  // ADMIN bark ynajem ybaddel stock w2ella price
+  // ADMIN bark ynajem ybaddel stock wa2ella price
   update(
     @Param('id') id: string,
     @Body() dto: UpdatePartDto,
@@ -53,6 +61,30 @@ export class PartsController {
   ) {
     this.ensureAdmin(req);
     return this.partsService.update(+id, dto);
+  }
+
+  @Patch(':id/add-stock')
+  @UseGuards(AuthGuard('jwt'))
+  // ADMIN bark ynajem yzid stock (BONUS)
+  addStock(
+    @Param('id') id: string,
+    @Body() dto: UpdateStockDto,
+    @Req() req: any,
+  ) {
+    this.ensureAdmin(req);
+    return this.partsService.addStock(+id, dto.quantity);
+  }
+
+  @Patch(':id/remove-stock')
+  @UseGuards(AuthGuard('jwt'))
+  // ADMIN bark ynajem yna9es stock (BONUS)
+  removeStock(
+    @Param('id') id: string,
+    @Body() dto: UpdateStockDto,
+    @Req() req: any,
+  ) {
+    this.ensureAdmin(req);
+    return this.partsService.removeStock(+id, dto.quantity);
   }
 
   @Delete(':id')
@@ -64,3 +96,4 @@ export class PartsController {
     return { message: 'Spare part deleted' };
   }
 }
+

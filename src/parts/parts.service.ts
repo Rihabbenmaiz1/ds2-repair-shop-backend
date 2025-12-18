@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SparePart } from './entities/spare-part.entity';
@@ -14,19 +14,13 @@ export class PartsService {
     private readonly partsRepository: Repository<SparePart>,
   ) {}
 
-  // tjib liste mta3 kol spare parts
+  // tjib liste mta3 spare parts el kol 
   findAll(): Promise<SparePart[]> {
     return this.partsRepository.find();
   }
 
-  // ncreate spare part jdida
-  create(dto: CreatePartDto): Promise<SparePart> {
-    const part = this.partsRepository.create(dto);
-    return this.partsRepository.save(part);
-  }
-
-  // nupdate stock wala price mta3 spare part
-  async update(id: number, dto: UpdatePartDto): Promise<SparePart> {
+  // tjib spare part wahda b id (BONUS)
+  async findOne(id: number): Promise<SparePart> {
     const part = await this.partsRepository.findOne({ where: { id } });
 
     // ken part mech mawjoud
@@ -34,11 +28,44 @@ export class PartsService {
       throw new NotFoundException('Spare part not found');
     }
 
+    return part;
+  }
+
+  // ncreate spare part jdida (ADMIN)
+  create(dto: CreatePartDto): Promise<SparePart> {
+    const part = this.partsRepository.create(dto);
+    return this.partsRepository.save(part);
+  }
+
+  // nupdate stock wala price mta3 spare part (ADMIN)
+  async update(id: number, dto: UpdatePartDto): Promise<SparePart> {
+    const part = await this.findOne(id);
+
     Object.assign(part, dto);
     return this.partsRepository.save(part);
   }
 
-  // nfasa5 spare part mel base
+  // tzid stock mta3 spare part (BONUS)
+  async addStock(id: number, quantity: number): Promise<SparePart> {
+    const part = await this.findOne(id);
+    part.stock += quantity;
+    return this.partsRepository.save(part);
+  }
+
+  // tna9es stock mta3 spare part (BONUS)
+  async removeStock(id: number, quantity: number): Promise<SparePart> {
+    const part = await this.findOne(id);
+
+    // ken stock ma yekfich
+    if (part.stock < quantity) {
+      throw new BadRequestException('Not enough stock');
+    }
+
+    part.stock -= quantity;
+    return this.partsRepository.save(part);
+  }
+
+  // nfassa5 spare part mel base (ADMIN)
   async remove(id: number): Promise<void> {
     const result = await this.partsRepository.delete(id);
 
@@ -47,3 +74,4 @@ export class PartsService {
     }
   }
 }
+
