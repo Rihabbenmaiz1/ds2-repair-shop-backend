@@ -1,98 +1,160 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+🛠️ Repair Shop Backend – DS2 Mini-Projet
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+📌 Description
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Ce projet est une API REST backend développée avec NestJS, TypeScript et MySQL, destinée à une société de réparation et de reconditionnement d’appareils électroniques.
 
-## Description
+L’application permet de :
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+gérer les utilisateurs (Admins et Techniciens),
 
-## Project setup
+gérer le stock de pièces détachées,
 
-```bash
-$ npm install
-```
+suivre les appareils en réparation,
 
-## Compile and run the project
+enregistrer les interventions effectuées par les techniciens.
 
-```bash
-# development
-$ npm run start
+🧱 Stack Technique
 
-# watch mode
-$ npm run start:dev
+Framework : NestJS (TypeScript)
 
-# production mode
-$ npm run start:prod
-```
+Base de données : MySQL
 
-## Run tests
+ORM : TypeORM
 
-```bash
-# unit tests
-$ npm run test
+Sécurité :
 
-# e2e tests
-$ npm run test:e2e
+Authentification JWT
 
-# test coverage
-$ npm run test:cov
-```
+Mots de passe hashés avec Bcrypt
 
-## Deployment
+Guards et gestion des rôles (ADMIN / TECH)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Qualité :
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+DTOs
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Validation avec class-validator
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Transactions pour les opérations critiques
 
-## Resources
+👥 Rôles Utilisateurs
 
-Check out a few resources that may come in handy when working with NestJS:
+ADMIN (Manager)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Gère les utilisateurs
 
-## Support
+Gère le stock des pièces
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Supervise les appareils et les interventions
 
-## Stay in touch
+TECH (Technicien)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Enregistre les appareils
 
-## License
+Crée les interventions
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Met à jour le statut des appareils
+
+🔐 Module 1 – Authentification & Users
+
+POST /auth/register
+→ Création de compte (TECH par défaut, ADMIN uniquement par un admin)
+
+POST /auth/login
+→ Authentification et génération d’un JWT
+
+GET /users/profile
+→ Profil de l’utilisateur connecté (ADMIN uniquement)
+
+🔹 Bonus Admin
+
+GET /users → Liste des utilisateurs
+
+PATCH /users/:id/role → Changer le rôle d’un utilisateur
+
+DELETE /users/:id → Supprimer un compte
+
+📦 Module 2 – Gestion du Stock (Spare Parts)
+
+GET /parts → Voir le stock (utilisateurs authentifiés)
+
+POST /parts → Créer une pièce (ADMIN)
+
+PATCH /parts/:id → Modifier stock ou prix (ADMIN)
+
+DELETE /parts/:id → Supprimer une pièce (ADMIN)
+
+🔹 Bonus
+
+GET /parts/:id
+
+PATCH /parts/:id/add-stock
+
+PATCH /parts/:id/remove-stock
+
+📱 Module 3 – Gestion des Appareils (Devices)
+
+POST /devices → Enregistrer un appareil
+
+GET /devices → Liste des appareils
+
+DELETE /devices/:id → Supprimer un appareil (ADMIN)
+
+🔹 Bonus
+
+GET /devices/:id
+
+PATCH /devices/:id/status
+
+PATCH /devices/:id/grade
+
+🔧 Module 4 – Atelier (Interventions)
+
+POST /interventions → Création d’une intervention (TECH uniquement)
+
+Logique métier :
+
+Le technicien connecté est assigné automatiquement
+
+Vérification et décrémentation du stock des pièces (transaction)
+
+Passage du device au statut REPAIRING
+
+Création de l’intervention liée au device et aux pièces
+
+🔹 Bonus
+
+GET /interventions → Liste des interventions
+
+GET /interventions/:id → Consultation sécurisée
+
+🧪 Tests
+
+Tests manuels réalisés avec Postman
+
+Scénario utilisateur complet validé :
+
+Création admin / technicien
+
+Gestion stock
+
+Enregistrement device
+
+Création intervention avec mise à jour automatique
+
+"Une collection Postman complète (ds2_repair_shop_backend.postman_collection.json) est disponible dans le dossier /postman. Elle inclut toutes les requêtes nécessaires pour tester les différents modules (Auth, Stock, Devices, Interventions) ainsi que le scénario de validation des transactions."
+
+▶️ Lancer le projet
+npm install
+npm run start
+
+
+Le serveur démarre sur :
+
+http://localhost:3000
+
+👩‍💻 Réalisé par
+
+RIHAB BEN MAIZ
+Mini-Projet DS2 – Développement Backend (NestJS)

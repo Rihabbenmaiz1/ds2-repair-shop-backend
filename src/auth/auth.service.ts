@@ -7,25 +7,24 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '../users/entities/user-role.enum';
-import { User } from '../users/entities/user.entity';
 
 @Injectable()
-// service mta3 auth (register / login)
+// service mta3 logique el auth (register / login)
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
-  // register user jdid
   async register(
     email: string,
     password: string,
     username: string,
-    role: UserRole = UserRole.TECH,
-    currentUser?: User,
-  ): Promise<User> {
-    // ken nheb ncreate ADMIN, lazem currentUser ykoun ADMIN
+    role: UserRole,
+    currentUser?: any,
+  ) {
+    // règle mohema:
+    // ken nheb ncreate admin → lazem user connecté ikoun admin
     if (role === UserRole.ADMIN) {
       if (!currentUser || currentUser.role !== UserRole.ADMIN) {
         throw new ForbiddenException(
@@ -37,10 +36,10 @@ export class AuthService {
     // ncheckiw ken email deja mawjoud
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
-      throw new ForbiddenException('Email deja utilisé');
+      throw new ForbiddenException('Email déjà utilisé');
     }
 
-    // nhashiw password b bcrypt
+    // nhachiw el password b bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // ncreate user fel base
@@ -52,31 +51,29 @@ export class AuthService {
     });
   }
 
-  // login user
   async login(email: string, password: string) {
     // nlawjou 3la user b email
     const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Email ou mot de passe incorrect');
+
+    // nverifiw el password
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException(
+        'Email ou mot de passe incorrect',
+      );
     }
 
-    // ncompareiw password m3a hash
-    const passwordValid = await bcrypt.compare(password, user.password);
-    if (!passwordValid) {
-      throw new UnauthorizedException('Email ou mot de passe incorrect');
-    }
-
-    // payload mta3 JWT (id + role)
+    // payload mta3 JWT: id (sub) + role
     const payload = {
       sub: user.id,
       role: user.role,
     };
 
-    // nraja3 JWT token
+    // nraj3ou access token
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 }
+
 
 
