@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -31,13 +32,12 @@ export class DevicesService {
     return this.devicesRepository.find();
   }
 
-  // tjib device wahda b id (BONUS)
+  // tjib device wahda b id
   async findOne(id: number): Promise<Device> {
     const device = await this.devicesRepository.findOne({
       where: { id },
     });
 
-    // ken device mech mawjoud
     if (!device) {
       throw new NotFoundException('Device not found');
     }
@@ -47,14 +47,12 @@ export class DevicesService {
 
   // nfassa5 device (ADMIN bark)
   async remove(id: number, userRole: UserRole): Promise<void> {
-    // ken mech ADMIN → accès refusé
     if (userRole !== UserRole.ADMIN) {
       throw new ForbiddenException('Admin only');
     }
 
     const result = await this.devicesRepository.delete(id);
 
-    // ken device mech mawjoud
     if (result.affected === 0) {
       throw new NotFoundException('Device not found');
     }
@@ -65,8 +63,14 @@ export class DevicesService {
     id: number,
     status: DeviceStatus,
   ): Promise<Device> {
+    // validation obligatoire
+    if (!status) {
+      throw new BadRequestException('Status is required');
+    }
+
     const device = await this.findOne(id);
     device.status = status;
+
     return this.devicesRepository.save(device);
   }
 
@@ -75,9 +79,16 @@ export class DevicesService {
     id: number,
     grade: DeviceGrade,
   ): Promise<Device> {
+    //  validation obligatoire
+    if (!grade) {
+      throw new BadRequestException('Grade is required');
+    }
+
     const device = await this.findOne(id);
     device.grade = grade;
+
     return this.devicesRepository.save(device);
   }
 }
+
 

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SparePart } from './entities/spare-part.entity';
@@ -14,12 +18,12 @@ export class PartsService {
     private readonly partsRepository: Repository<SparePart>,
   ) {}
 
-  // tjib liste mta3 spare parts el kol 
+  // tjib liste mta3 spare parts el kol
   findAll(): Promise<SparePart[]> {
     return this.partsRepository.find();
   }
 
-  // tjib spare part wahda b id (BONUS)
+  // tjib spare part wahda b id
   async findOne(id: number): Promise<SparePart> {
     const part = await this.partsRepository.findOne({ where: { id } });
 
@@ -39,6 +43,11 @@ export class PartsService {
 
   // nupdate stock wala price mta3 spare part (ADMIN)
   async update(id: number, dto: UpdatePartDto): Promise<SparePart> {
+    // ⚠️ lazem fama champs bech nupdate
+    if (!dto || Object.keys(dto).length === 0) {
+      throw new BadRequestException('No update values provided');
+    }
+
     const part = await this.findOne(id);
 
     Object.assign(part, dto);
@@ -47,13 +56,24 @@ export class PartsService {
 
   // tzid stock mta3 spare part (BONUS)
   async addStock(id: number, quantity: number): Promise<SparePart> {
+    // nverifiw quantity
+    if (!quantity || quantity <= 0) {
+      throw new BadRequestException('Quantity must be greater than 0');
+    }
+
     const part = await this.findOne(id);
     part.stock += quantity;
+
     return this.partsRepository.save(part);
   }
 
   // tna9es stock mta3 spare part (BONUS)
   async removeStock(id: number, quantity: number): Promise<SparePart> {
+    // nverifiw quantity
+    if (!quantity || quantity <= 0) {
+      throw new BadRequestException('Quantity must be greater than 0');
+    }
+
     const part = await this.findOne(id);
 
     // ken stock ma yekfich
@@ -74,4 +94,5 @@ export class PartsService {
     }
   }
 }
+
 

@@ -12,32 +12,32 @@ import { Device } from '../../devices/entities/device.entity';
 import { SparePart } from '../../parts/entities/spare-part.entity';
 
 @Entity()
-// table mta3 intervention (عملية التصليح)
+// table mta3 intervention
 export class Intervention {
   @PrimaryGeneratedColumn()
   id: number;
 
   @CreateDateColumn()
-  // date mta3 intervention tetkhazen automatiquement
+  // date automatique mta3 intervention
   date: Date;
 
   @Column()
-  // description mta3 chnoua tsalla7
+  // description chnoua tsalla7
   description: string;
 
-  @ManyToOne(() => User, (user) => user.interventions, { eager: true })
-  // technicien ely 3mal el intervention
+  @ManyToOne(() => User, (user) => user.interventions)
+  // technicien eli 3mal intervention
   technician: User;
 
-  @ManyToOne(() => Device, (device) => device.interventions, { eager: true })
-  // device ely tetsalah
+  @ManyToOne(() => Device, (device) => device.interventions)
+  // device eli tetsala7
   device: Device;
 
-  @ManyToMany(() => SparePart, (sparePart) => sparePart.interventions, {
-    eager: true,
-  })
+  @ManyToMany(() => SparePart, (sparePart) => sparePart.interventions)
   @JoinTable()
-  // spare parts ely testa3malhom fy el  intervention
+  // spare parts mesta3mla
   spareParts: SparePart[];
 }
+
+
 
